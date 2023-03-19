@@ -1,0 +1,23 @@
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+        cache: 'npm'
+    - run: npm install
+    - run: npm run build
+
+    - name: Deploy to BunnyCDN
+      uses: ayeressian/bunnycdn-storage-deploy@v1.1.1
+      with:
+        source: "build"
+        storageZoneName: "${{ secrets.STORAGE_NAME }}"
+        accessKey: "${{ secrets.STORAGE_KEY }}"
+        pullZoneId: "${{ secrets.ZONE_ID }}"
+        pullZoneAccessKey: "${{ secrets.PULL_ZONE_KEY }}"
+        remove: "true"
+        purge: "true"
